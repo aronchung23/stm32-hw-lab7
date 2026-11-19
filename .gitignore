@@ -1,0 +1,22 @@
+# build output (rebuild in STM32CubeIDE)
+Debug/
+Release/
+*.o
+*.d
+*.su
+*.cyclo
+
+# course handouts / third-party papers / personal notes (not part of the homework)
+CMSIS-DSP-CubeIDE_.pdf
+CMSIS-NN-2018-paper.pdf
+step.txt
+
+# IDE / OS
+*.launch
+.metadata/
+.vscode/
+Thumbs.db
+
+# Python
+__pycache__/
+*.pyc

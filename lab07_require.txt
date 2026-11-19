@@ -1,0 +1,13 @@
+HW-Lab7: CMSIS-DSP programming
+截止時間： 11月20日 23:59 分數 100 繳交方式 線上輸入，網站網址，或者檔案上傳 接受繳交時間 在 11月4日 00:00 之後
+HW-Lab7 CMSIS-DSP Programming
+
+Basic Problem
+
+Design a DSP program using  STM32CubeIDE to process the chosen sensor data ( such as 3D accelerators or gyroscopes) from STM32 IOT Node development board.
+
+Your DSP program can implement a low pass filter, like FIR example, or other algorithms, such as FFT, etc. Before testing real data, you should test the program using a known signal to show the correctness.
+
+====option problem_1==== (optional personal report, plus 10 points)
+
+Design three tasks that are scheduled by CMSIS-RTOS2. The first task with highest priority reads your chosen sensor data periodically (trigger by a timer) and the second task processes the data using a digital filter. Then the third task sends the before-processed data and the after-processed data through wifi (or BLE) to a PC/RPi to display/check visually.

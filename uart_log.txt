@@ -1,0 +1,102 @@
+﻿HWver 49
+FWver 1840
+BLE Stack Initialized
+BlueMS HW service added successfully.
+BlueMS SW service added successfully.
+DspService added (DATA value handle 34)
+
+##### HW-Lab7: CMSIS-DSP FIR low-pass on the LSM6DSL accelerometer #####
+SYSCLK = 4000000 Hz, CMSIS-RTOS2 (FreeRTOS), BLE name "LAB7DSP"
+LSM6DSL ready (ODR 104 Hz, +-2 g), TASK_SENSOR waits for TIM2
+
+================ Test 1: CMSIS-DSP arm_fir_example ================
+input = sin(2*pi*1kHz*t) + 0.5*sin(2*pi*15kHz*t + pi/4), fs = 48 kHz, 320 samples
+filter = fir1(28, 6/24): 29-tap low-pass, fc = 6 kHz, block size 32
+   n      input     arm_fir_f32   MATLAB ref
+   0   +0.000000     +0.000000    +0.000000
+  16   +0.866025     +0.268142    +0.268142
+  32   -0.866025     +0.708502    +0.708502
+  48   +0.000000     -0.968154    -0.968154
+  64   +0.866025     +0.259244    +0.259244
+  80   -0.866025     +0.708502    +0.708502
+  96   +0.000000     -0.968154    -0.968154
+ 112   +0.866025     +0.259244    +0.259244
+ 128   -0.866025     +0.708502    +0.708502
+ 144   +0.000000     -0.968154    -0.968154
+ 160   +0.866025     +0.259244    +0.259244
+ 176   -0.866025     +0.708502    +0.708502
+ 192   +0.000000     -0.968154    -0.968154
+ 208   +0.866025     +0.259244    +0.259244
+ 224   -0.866025     +0.708502    +0.708502
+ 240   +0.000000     -0.968154    -0.968154
+ 256   +0.866025     +0.259244    +0.259244
+ 272   -0.866025     +0.708502    +0.708502
+ 288   +0.000000     -0.968154    -0.968154
+ 304   +0.866025     +0.259244    +0.259244
+SNR(arm_fir_f32 vs MATLAB refOutput) = +142.59 dB  (threshold 140 dB)
+max |arm_fir_f32 - plain C FIR|     = +0.000000
+cycles for 320 samples: arm_fir_f32 = 40592, plain C = 410303  (+10.11 x faster)
+Test 1 result: SUCCESS
+
+========== Test 2: accelerometer LPF with a known signal ==========
+filter = fir1(28, 4/32): 29 taps, fc = 4 Hz, fs = 64 Hz, delay = 14 samples
+input  = sin(2*pi*1*n/64) + 0.5*sin(2*pi*16*n/64), 288 samples, block size 16
+theory: |H(1 Hz)| = +0.9771 (-0.20 dB), |H(16 Hz)| = +0.000881 (-61.10 dB)
+   n      x[n]      y[n]   ideal y[n]
+  32   +0.0000   +0.9583   +0.9583
+  36   -0.3827   +0.8124   +0.8124
+  40   -0.7071   +0.5428   +0.5428
+  44   -0.9239   +0.1906   +0.1906
+  48   -1.0000   -0.1906   -0.1906
+  52   -0.9239   -0.5428   -0.5428
+  56   -0.7071   -0.8124   -0.8124
+  60   -0.3827   -0.9583   -0.9583
+  64   +0.0000   -0.9583   -0.9583
+  68   +0.3827   -0.8124   -0.8124
+  72   +0.7071   -0.5428   -0.5428
+  76   +0.9239   -0.1906   -0.1906
+  80   +1.0000   +0.1906   +0.1906
+  84   +0.9239   +0.5428   +0.5428
+  88   +0.7071   +0.8124   +0.8124
+  92   +0.3827   +0.9583   +0.9583
+SNR(y vs ideal 1 Hz output, n = 32..287) = +66.92 dB
+FFT (arm_cfft_f32, N = 256, 0.25 Hz/bin)   input      output    gain
+   bin  4 ( 1 Hz) amplitude              +1.0000   +0.9771  -0.20 dB
+   bin 64 (16 Hz) amplitude              +0.5000  +0.000440  -61.10 dB
+   largest bins: input -> bin 4 (+1.00 Hz), output -> bin 4 (+1.00 Hz)
+cycles: arm_fir_f32 on 288 samples = 37559 (130 per sample)
+Test 2 result: SUCCESS  (need SNR > 40 dB, 16 Hz < -40 dB, 1 Hz within 0.5 dB)
+
+===== Known-signal tests: Test 1 SUCCESS, Test 2 SUCCESS =====
+
+TIM2: clk = 4000000 Hz, PSC = 3, ARR = 15624 -> fs = 64 Hz
+Real-time: fs = 64 Hz, FIR 29 taps (fc = 4 Hz), block = 16 samples; one line per block:
+Set General Discoverable Mode.
+aci_gap_set_discoverable() --> SUCCESS
+[    0] seq    15 raw X=   20 Y=  322 Z=  972 | filt X=   14 Y=  221 Z=  664 mg | FIR 6383 cyc | BLE off sent=0 drop=0
+[    1] seq    31 raw X=   21 Y=  323 Z=  973 | filt X=   21 Y=  323 Z=  972 mg | FIR 6384 cyc | BLE off sent=0 drop=0
+[    2] seq    47 raw X=   21 Y=  323 Z=  973 | filt X=   21 Y=  323 Z=  973 mg | FIR 6384 cyc | BLE off sent=0 drop=0
+[    3] seq    63 raw X=   22 Y=  324 Z=  974 | filt X=   21 Y=  323 Z=  973 mg | FIR 6384 cyc | BLE off sent=0 drop=0
+[    4] seq    79 raw X=   22 Y=  324 Z=  972 | filt X=   21 Y=  323 Z=  973 mg | FIR 6384 cyc | BLE off sent=0 drop=0
+[    5] seq    95 raw X=   22 Y=  324 Z=  973 | filt X=   21 Y=  323 Z=  973 mg | FIR 6384 cyc | BLE off sent=0 drop=0
+[    6] seq   111 raw X=   21 Y=  322 Z=  973 | filt X=   21 Y=  323 Z=  973 mg | FIR 6384 cyc | BLE off sent=0 drop=0
+[    7] seq   127 raw X=   22 Y=  323 Z=  974 | filt X=   21 Y=  323 Z=  973 mg | FIR 6384 cyc | BLE off sent=0 drop=0
+[    8] seq   143 raw X=   21 Y=  322 Z=  972 | filt X=   22 Y=  323 Z=  973 mg | FIR 6384 cyc | BLE off sent=0 drop=0
+[    9] seq   159 raw X=   21 Y=  323 Z=  972 | filt X=   21 Y=  323 Z=  973 mg | FIR 6384 cyc | BLE off sent=0 drop=0
+[   10] seq   175 raw X=   21 Y=  323 Z=  973 | filt X=   21 Y=  323 Z=  973 mg | FIR 6384 cyc | BLE off sent=0 drop=0
+[   11] seq   191 raw X=   22 Y=  323 Z=  973 | filt X=   21 Y=  323 Z=  973 mg | FIR 6384 cyc | BLE off sent=0 drop=0
+[   12] seq   207 raw X=   22 Y=  322 Z=  972 | filt X=   22 Y=  323 Z=  973 mg | FIR 6384 cyc | BLE off sent=0 drop=0
+[   13] seq   223 raw X=   22 Y=  324 Z=  973 | filt X=   21 Y=  323 Z=  972 mg | FIR 6384 cyc | BLE off sent=0 drop=0
+[   14] seq   239 raw X=   21 Y=  324 Z=  972 | filt X=   21 Y=  323 Z=  972 mg | FIR 6384 cyc | BLE off sent=0 drop=0
+[   15] seq   255 raw X=   23 Y=  325 Z=  973 | filt X=   22 Y=  323 Z=  972 mg | FIR 6384 cyc | BLE off sent=0 drop=0
+[   16] seq   271 raw X=   21 Y=  323 Z=  972 | filt X=   22 Y=  323 Z=  972 mg | FIR 6384 cyc | BLE off sent=0 drop=0
+[   17] seq   287 raw X=   22 Y=  321 Z=  971 | filt X=   21 Y=  323 Z=  972 mg | FIR 6384 cyc | BLE off sent=0 drop=0
+[   18] seq   303 raw X=   21 Y=  324 Z=  970 | filt X=   22 Y=  323 Z=  972 mg | FIR 6384 cyc | BLE off sent=0 drop=0
+[   19] seq   319 raw X=   22 Y=  323 Z=  971 | filt X=   21 Y=  323 Z=  971 mg | FIR 6384 cyc | BLE off sent=0 drop=0
+[   20] seq   335 raw X=   21 Y=  323 Z=  972 | filt X=   22 Y=  323 Z=  972 mg | FIR 6384 cyc | BLE off sent=0 drop=0
+[   21] seq   351 raw X=   22 Y=  323 Z=  972 | filt X=   21 Y=  323 Z=  972 mg | FIR 6384 cyc | BLE off sent=0 drop=0
+[   22] seq   367 raw X=   22 Y=  322 Z=  971 | filt X=   21 Y=  323 Z=  972 mg | FIR 6384 cyc | BLE off sent=0 drop=0
+[   23] seq   383 raw X=   20 Y=  323 Z=  972 | filt X=   21 Y=  323 Z=  972 mg | FIR 6384 cyc | BLE off sent=0 drop=0
+[   24] seq   399 raw X=   21 Y=  322 Z=  971 | filt X=   21 Y=  323 Z=  972 mg | FIR 6384 cyc | BLE off sent=0 drop=0
+[   25] seq   415 raw X=   20 Y=  323 Z=  972 | filt X=   21 Y=  323 Z=  971 mg | FIR 6384 cyc | BLE off sent=0 drop=0
+[   26] seq   431 raw X=   22 Y=  323 Z=  970 | filt X=   21 Y=  323 Z=  971 mg | FIR 6384 cyc | BLE off sent=0 drop=0

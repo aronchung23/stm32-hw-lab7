@@ -156,12 +156,3 @@ TIM2 update IRQ (64 Hz) ──osThreadFlagsSet──▶ TASK_SENSOR  (osPriority
 | X | −0.3 dB | **−49.2 dB** |
 | Y | +0.3 dB | **−47.9 dB** |
 | Z | −0.3 dB | **−52.9 dB** |
-
----
-
-## 跟 lab04 比改了什麼
-
-* 拿掉 lab04 的取樣頻率 characteristic 和 significant motion（PD11 中斷），換成 `dsp_service`；BLE 名稱改成 `LAB7DSP`。
-* BLE 廣播間隔從 1000–1200 ms 改成 100–200 ms（`sensor.c`），附近藍牙裝置很多時，電腦比較快找到板子。
-* 兩個 task → 三個 task（`.ioc` 的 FREERTOS.Tasks01 也同步改了）。TIM2 用暫存器直接設定，寫在 USER CODE 區塊，CubeMX 重新 Generate 不會被蓋掉。
-* **I2C bus recovery**（`ACC_BusRecover()`）：板子如果在 I2C 讀到一半時被重置，LSM6DSL 會一直拉住 SDA，之後每次讀都失敗（測試時遇過 `LSM6DSL init failed!`）。現在初始化失敗時會手動打 SCL 脈波讓它放開 SDA，再重新初始化（連續重置 6 次測試，第 5 次有遇到並自動救回）。
